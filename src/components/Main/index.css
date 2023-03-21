@@ -1,0 +1,15 @@
+.main-container {
+    text-align: center;
+    margin: 100px auto;
+    width: 550px;
+    height: 550px;
+    border: 3px solid #DEEBF8;
+    background-color: #F5F7FB;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 19px;
+    font-weight: 400;
+}
