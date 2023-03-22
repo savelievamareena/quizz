@@ -4,27 +4,22 @@ import StartPage from "../StartPage/index";
 import QuizPage from "../QuizPage";
 
 export default function Main() {
-
     const [isStart, setIsStart] = React.useState(false);
     const [questions, setQuestions] = React.useState({});
 
-    // function startQuiz() {
-    //     debugger
-    //
-    //     fetch('http://example.com/movies.json')
-    //         .then((response) => response.json())
-    //         .then((data) => setQuestions(data))
-    //         .then((data) => console.log(data))
-    //     // console.log(result)
-    //
-    //     // setQuestions(prevQuestions => {...questions, result});
-    //     // setIsStart(true);
-    // }
+    function startQuiz() {
+        console.log("before fetch")
+
+        fetch('https://opentdb.com/api.php?amount=5&category=11&difficulty=medium')
+            .then((response) => response.json())
+            .then((data) => setQuestions({...data}))
+        setIsStart(true);
+    }
 
     return(
         <div className="main-container">
             {
-                isStart ? <QuizPage/> : <StartPage startQuiz={function() {console.log("started")}}/>
+                isStart ? <QuizPage apiResponce={questions} /> : <StartPage startQuiz={function() {startQuiz()}} />
             }
         </div>
     )
