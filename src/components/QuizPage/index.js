@@ -1,26 +1,19 @@
 import React from 'react'
 import './index.css';
 import arrayShuffle from '../../helpers/arrayShuffle'
-import decodeString from "../../helpers/decodeString";
+import Question from "../Question";
 
 export default function QuizPage(props) {
     let questionsToShow;
-    let answersRandom;
 
     if(props.apiResponce.results) {
+
         questionsToShow = props.apiResponce.results.map((question, i) => {
-            let answers = question.incorrect_answers.concat(question.correct_answer);
-            answersRandom = arrayShuffle(answers)
+            let allAnswers = question.incorrect_answers.concat(question.correct_answer);
+            let answersRandom = arrayShuffle(allAnswers)
 
             return (
-                <div key={i} className="questionElement">
-                    <div className="questionRow">
-                        {decodeString(question.question)}
-                    </div>
-                    <div className="answersRow">
-                        {answersRandom.map(answer => <span className="oneOfAnswers">{decodeString(answer)}</span>)}
-                    </div>
-                </div>
+                <Question answersRandom={answersRandom} question={question.question} key={i}/>
             )
         })
     }

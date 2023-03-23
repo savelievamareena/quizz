@@ -1,0 +1,12 @@
+.oneOfAnswers {
+    padding: 3px 6px;
+    border: 1px solid #4D5B9E;
+    border-radius: 8px;
+    min-width: 60px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 12px;
+    color: #293264;
+    cursor: pointer;
+}
