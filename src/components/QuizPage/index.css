@@ -1,11 +1,48 @@
-.quiz-page {
+.questionsContainer {
     text-align: left;
+    margin: 30px 75px 0;
 }
 
-.answersRow {
-    padding-bottom: 20px;
+.quiz-page button {
+    width: 120px;
+    height: 35px;
+    background: #4D5B9E;
+    border-radius: 10px;
+    outline: none;
+    color: white;
+    margin: 20px auto;
 }
 
 .oneOfAnswers {
-    padding-right: 4px;
+    padding: 2px 6px;
+    border: 1px solid #4D5B9E;
+    border-radius: 8px;
+    min-width: 60px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 12px;
+    color: #293264;
+}
+
+.questionRow {
+    font-family: 'Karla', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    color: #293264;
+    padding-bottom: 10px;
+}
+
+.answersRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.questionElement {
+    border-bottom: 1px solid #DBDEF0;
+    padding: 15px 0;
 }

@@ -8,8 +8,6 @@ export default function Main() {
     const [questions, setQuestions] = React.useState({});
 
     function startQuiz() {
-        console.log("before fetch")
-
         fetch('https://opentdb.com/api.php?amount=5&category=11&difficulty=medium')
             .then((response) => response.json())
             .then((data) => setQuestions({...data}))
