@@ -7,7 +7,7 @@ import decodeString from "../../helpers/decodeString";
 export default function QuizPage() {
     const [quizData, setQuizData] = React.useState({});
     const [isCompleted, setIsCompleted] = React.useState(false);
-    // const [score, setScore] = React.useState(0);
+    const [score, setScore] = React.useState(0);
 
     function getSiblings(element) {
         let siblings = [];
@@ -40,7 +40,22 @@ export default function QuizPage() {
     }
 
     function startNewGame() {
+        setScore(0);
+        setQuizData({});
         fetchQuizData().then(data => setQuizData({...data}));
+        let rightAnswers = Array.from(document.getElementsByClassName("right"));
+        if(rightAnswers) {
+            rightAnswers.map(el => {
+                return el.classList.remove("right");
+            })
+        }
+        let wrongAnswers = Array.from(document.getElementsByClassName("error"));
+        if(wrongAnswers) {
+            wrongAnswers.map(el => {
+                return el.classList.remove("error");
+            })
+        }
+        setIsCompleted(false);
     }
 
     React.useEffect(() => {
@@ -54,7 +69,7 @@ export default function QuizPage() {
             let answersRandom = arrayShuffle(allAnswers)
 
             return (
-                <Question answersRandom={answersRandom} question={question.question} selectAnswer={(e) => selectAnswer(e)} key={i}/>
+                <Question answersRandom={answersRandom} question={question.question} selectAnswer={(e) => selectAnswer(e)} isCompleted={isCompleted} key={i}/>
             )
         })
     }else {
@@ -65,24 +80,36 @@ export default function QuizPage() {
 
     function checkAnswers() {
         let answers = [];
+        // eslint-disable-next-line array-callback-return
         quizData.results.map(result => {
             answers.push(decodeString(result.correct_answer));
         })
 
         let answersSelected = [];
         let answersSelectedEls = Array.from(document.getElementsByClassName("selected"));
+        // eslint-disable-next-line array-callback-return
         answersSelectedEls.map(el => {
             answersSelected.push(el.innerText);
         })
-
-        console.log(answers)
-        console.log(answersSelected)
 
         if(answers.length !== answersSelected.length) {
             alert("Please answer all the questions");
         }
 
-        // setIsCompleted(true);
+        let qRow = Array.from(document.getElementsByClassName("questionElement"));
+        for(let i = 0; i < 5; i++) {
+            let selectedAnswerElement = qRow[i].lastChild.querySelector(".selected");
+            if(answers[i] === answersSelected[i]) {
+                setScore(prevSetScore => ++prevSetScore)
+                selectedAnswerElement.classList.add("right");
+                selectedAnswerElement.classList.remove("selected");
+            }else {
+                selectedAnswerElement.classList.add("error");
+                selectedAnswerElement.classList.remove("selected");
+            }
+        }
+
+        setIsCompleted(true);
     }
 
     return(
@@ -92,10 +119,9 @@ export default function QuizPage() {
             </div>
             <div>
                 {isCompleted ?
-                    <button className="startNewGameButton" onClick={startNewGame}>Play again</button> :
+                    <div><span>You scored {score}/5 correct answers</span> <button className="startNewGameButton" onClick={startNewGame}>Play again</button></div> :
                     <button className="checkAnswersButton" onClick={checkAnswers}>Check answers</button>
                 }
-
             </div>
         </div>
     )
