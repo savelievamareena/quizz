@@ -16,3 +16,20 @@
     background-color: #D6DBF5;
     border: 1px solid #D6DBF5;
 }
+
+.error {
+    color: #8F94AF;
+    background-color: #F8BCBC;
+    border: 1px solid #8F94AF;
+}
+
+.right {
+    color: #293264;
+    background-color: #94D7A2;
+    border: 1px solid #94D7A2;
+}
+
+.disabled {
+    color: #8F94AF;
+    border: 1px solid #8F94AF;
+}

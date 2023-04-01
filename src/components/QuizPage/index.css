@@ -34,3 +34,7 @@
     border-bottom: 1px solid #DBDEF0;
     padding: 15px 0;
 }
+
+.checkAnswersButton {
+    cursor: pointer;
+}

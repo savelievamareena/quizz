@@ -2,9 +2,12 @@ import React from 'react'
 import './index.css';
 import arrayShuffle from '../../helpers/arrayShuffle'
 import Question from "../Question";
+import decodeString from "../../helpers/decodeString";
 
 export default function QuizPage() {
     const [quizData, setQuizData] = React.useState({});
+    const [isCompleted, setIsCompleted] = React.useState(false);
+    // const [score, setScore] = React.useState(0);
 
     function getSiblings(element) {
         let siblings = [];
@@ -36,8 +39,12 @@ export default function QuizPage() {
         return await response.json();
     }
 
-    React.useEffect(() => {
+    function startNewGame() {
         fetchQuizData().then(data => setQuizData({...data}));
+    }
+
+    React.useEffect(() => {
+        startNewGame();
     }, [])
 
     let questionsToShow;
@@ -56,13 +63,39 @@ export default function QuizPage() {
         )
     }
 
+    function checkAnswers() {
+        let answers = [];
+        quizData.results.map(result => {
+            answers.push(decodeString(result.correct_answer));
+        })
+
+        let answersSelected = [];
+        let answersSelectedEls = Array.from(document.getElementsByClassName("selected"));
+        answersSelectedEls.map(el => {
+            answersSelected.push(el.innerText);
+        })
+
+        console.log(answers)
+        console.log(answersSelected)
+
+        if(answers.length !== answersSelected.length) {
+            alert("Please answer all the questions");
+        }
+
+        // setIsCompleted(true);
+    }
+
     return(
         <div className="quiz-page">
             <div className="questionsContainer">
                 {questionsToShow}
             </div>
             <div>
-                <button>Check answers</button>
+                {isCompleted ?
+                    <button className="startNewGameButton" onClick={startNewGame}>Play again</button> :
+                    <button className="checkAnswersButton" onClick={checkAnswers}>Check answers</button>
+                }
+
             </div>
         </div>
     )
