@@ -3,36 +3,15 @@ import './index.css';
 import arrayShuffle from '../../helpers/arrayShuffle'
 import Question from "../Question";
 import decodeString from "../../helpers/decodeString";
+import getSiblings from "../../helpers/getSiblings"
 
 export default function QuizPage() {
     const [quizData, setQuizData] = React.useState({});
+    const [questionsWithAnswers, setQuestionsWithAnswers] = React.useState([]);
     const [isCompleted, setIsCompleted] = React.useState(false);
     const [score, setScore] = React.useState(0);
 
-    function getSiblings(element) {
-        let siblings = [];
-        let sibling = element.target.parentNode.firstElementChild;
-
-        while(sibling) {
-            if (sibling.nodeType === 1 && sibling !== element) {
-                siblings.push(sibling);
-                sibling = sibling.nextElementSibling;
-            }
-        }
-        return siblings;
-    }
-
-    function selectAnswer(e) {
-        let siblings = getSiblings(e);
-        // eslint-disable-next-line array-callback-return
-        siblings.map(sibling => {
-            if(sibling.classList.contains("selected")) {
-                sibling.classList.remove('selected');
-            }
-        })
-
-        e.currentTarget.classList.toggle('selected');
-    }
+    console.log(quizData)
 
     async function fetchQuizData() {
         const response = await fetch('https://opentdb.com/api.php?amount=5&category=11&difficulty=medium');
@@ -62,14 +41,34 @@ export default function QuizPage() {
         startNewGame();
     }, [])
 
+    React.useEffect(() => {
+        if(quizData.results) {
+            let questionObjArray = []
+
+            // eslint-disable-next-line array-callback-return
+            quizData.results.map((questionElement) => {
+                let questionObj = {
+                    question: "",
+                    answers: []
+                }
+
+                questionObj.question = questionElement.question;
+
+                let allAnswers = questionElement.incorrect_answers.concat(questionElement.correct_answer);
+                let answersRandom = arrayShuffle(allAnswers)
+                questionObj.answers = [...answersRandom];
+                questionObjArray.push(questionObj);
+            })
+
+            setQuestionsWithAnswers([...questionObjArray])
+        }
+    }, [quizData])
+
     let questionsToShow;
     if(quizData.results) {
-        questionsToShow = quizData.results.map((question, i) => {
-            let allAnswers = question.incorrect_answers.concat(question.correct_answer);
-            let answersRandom = arrayShuffle(allAnswers)
-
+        questionsToShow = questionsWithAnswers.map((question, i) => {
             return (
-                <Question answersRandom={answersRandom} question={question.question} selectAnswer={(e) => selectAnswer(e)} isCompleted={isCompleted} key={i}/>
+                <Question answersRandom={question.answers} question={question.question} selectAnswer={(e) => selectAnswer(e)} isCompleted={isCompleted} key={i}/>
             )
         })
     }else {
@@ -78,12 +77,25 @@ export default function QuizPage() {
         )
     }
 
+    function selectAnswer(e) {
+        let siblings = getSiblings(e);
+        // eslint-disable-next-line array-callback-return
+        siblings.map(sibling => {
+            if(sibling.classList.contains("selected")) {
+                sibling.classList.remove('selected');
+            }
+        })
+
+        e.currentTarget.classList.toggle('selected');
+    }
+
     function checkAnswers() {
         let answers = [];
         // eslint-disable-next-line array-callback-return
         quizData.results.map(result => {
             answers.push(decodeString(result.correct_answer));
         })
+        // setCorrectAnswers([...answers]);
 
         let answersSelected = [];
         let answersSelectedEls = Array.from(document.getElementsByClassName("selected"));
