@@ -4,7 +4,7 @@ import './index.css';
 export default function Answer(props) {
 
     return (
-        <div className="oneOfAnswers" >
+        <div className="oneOfAnswers" onClick={props.selectAnswer}>
             {props.answer}
         </div>
     )

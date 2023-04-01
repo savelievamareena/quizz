@@ -7,7 +7,7 @@ export default function Question(props) {
 
     const answersToShow = props.answersRandom.map((answer, i) => {
         return(
-            <Answer key={i} answer={decodeString(answer)} />
+            <Answer key={i} answer={decodeString(answer)} selectAnswer={(e) => props.selectAnswer(e)} />
         )
     })
 

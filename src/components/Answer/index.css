@@ -10,3 +10,9 @@
     color: #293264;
     cursor: pointer;
 }
+
+.selected {
+    color: #293264;
+    background-color: #D6DBF5;
+    border: 1px solid #D6DBF5;
+}

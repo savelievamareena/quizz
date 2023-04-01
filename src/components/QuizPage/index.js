@@ -4,22 +4,50 @@ import arrayShuffle from '../../helpers/arrayShuffle'
 import Question from "../Question";
 
 export default function QuizPage() {
-    const [questions, setQuestions] = React.useState({});
+    const [quizData, setQuizData] = React.useState({});
+
+    function getSiblings(element) {
+        let siblings = [];
+        let sibling = element.target.parentNode.firstElementChild;
+
+        while(sibling) {
+            if (sibling.nodeType === 1 && sibling !== element) {
+                siblings.push(sibling);
+                sibling = sibling.nextElementSibling;
+            }
+        }
+        return siblings;
+    }
+
+    function selectAnswer(e) {
+        let siblings = getSiblings(e);
+        // eslint-disable-next-line array-callback-return
+        siblings.map(sibling => {
+            if(sibling.classList.contains("selected")) {
+                sibling.classList.remove('selected');
+            }
+        })
+
+        e.currentTarget.classList.toggle('selected');
+    }
+
+    async function fetchQuizData() {
+        const response = await fetch('https://opentdb.com/api.php?amount=5&category=11&difficulty=medium');
+        return await response.json();
+    }
 
     React.useEffect(() => {
-        fetch('https://opentdb.com/api.php?amount=5&category=11&difficulty=medium')
-            .then((response) => response.json())
-            .then((data) => setQuestions({...data}))
+        fetchQuizData().then(data => setQuizData({...data}));
     }, [])
 
     let questionsToShow;
-    if(questions.results) {
-        questionsToShow = questions.results.map((question, i) => {
+    if(quizData.results) {
+        questionsToShow = quizData.results.map((question, i) => {
             let allAnswers = question.incorrect_answers.concat(question.correct_answer);
             let answersRandom = arrayShuffle(allAnswers)
 
             return (
-                <Question answersRandom={answersRandom} question={question.question} key={i}/>
+                <Question answersRandom={answersRandom} question={question.question} selectAnswer={(e) => selectAnswer(e)} key={i}/>
             )
         })
     }else {
